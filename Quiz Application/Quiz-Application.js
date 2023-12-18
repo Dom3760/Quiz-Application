@@ -1,63 +1,67 @@
-const questionBox = document.getElementById("Question")
-const buttonContainer = document.getElementById("buttonContainer")
-const buttons = document.querySelectorAll(".answers")
-var nextButton = document.createElement("button")
+const questionBox = document.getElementById("Question");
+const buttonContainer = document.getElementById("buttonContainer");
+const buttons = document.querySelectorAll(".answers");
+var nextButton = document.createElement("button");
+let questionAnswered = false;
+var score = 0;
 
-let currentQuestionIndex = 0
+let currentQuestionIndex = 0;
 
-function display ()
-{
-    questionBox.innerText = (questions[currentQuestionIndex].question)
+function display() {
+  questionBox.innerText = questions[currentQuestionIndex].question;
 
-    for(let i=0; i < buttons.length; i++)
-    {
-        if(currentQuestionIndex === 10)
-        {
-            buttons[i].remove()
-
-        }
-        if(currentQuestionIndex <= 9)
-        {
-        buttons [i].innerText = questions[currentQuestionIndex].answer[i].option
-        buttons[i].addEventListener("click", correct)
-        console.log(i)
-        }
-        if(buttons[i].style.backgroundColor !== "rgb(255, 122, 45)")
-        {
-            buttons[i].style.backgroundColor = "rgb(255, 122, 45)"
-        }
-        if(currentQuestionIndex === 10)
-        {
-            buttons[i].remove()
-        }
+  if (currentQuestionIndex <= 9) {
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].innerText = questions[currentQuestionIndex].answer[i].option;
+      buttons[i].addEventListener("click", function () {
+        correct(i);
+      });
+      buttons[i].style.backgroundColor = "rgb(255, 122, 45)";
     }
-}
-
-function correct ()
-{
-    for (let i = 0; i < buttons.length; i++){
-        if (questions[currentQuestionIndex].answer[i].correct === true)
-        {
-            buttons[i].style.backgroundColor = "green"
-            // add next button and event listener to switch to next array item
-            // var nextButton = document.createElement("button")
-            nextButton.innerText ="Next"
-            buttonContainer.appendChild(nextButton)
-            nextButton.addEventListener("click",next)
-        }else
-        {
-            buttons[i].style.backgroundColor = "red"
-        }
+  } else {
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].remove();
     }
+  }
 }
 
-function next ()
-{
-    currentQuestionIndex ++
-    nextButton.remove()
-    console.log(currentQuestionIndex)
-    display()
+function correct(clickedIndex) {
+  if (questionAnswered) {
+    return;
+  }
+
+  questionAnswered = true;
+
+  for (let i = 0; i < buttons.length; i++) {
+    if (questions[currentQuestionIndex].answer[i].correct) {
+      buttons[i].style.backgroundColor = "green";
+      if (clickedIndex === i) {
+        // Increment score only for the clicked correct answer
+        score++;
+        console.log("Score incremented:", score);
+      }
+    } else {
+      buttons[i].style.backgroundColor = "red";
+    }
+  }
+
+  displayNextButton();
 }
+
+function displayNextButton() {
+  nextButton.innerText = "Next";
+  buttonContainer.appendChild(nextButton);
+  nextButton.classList = "next";
+  nextButton.addEventListener("click", next);
+}
+
+function next() {
+  currentQuestionIndex++;
+  nextButton.remove();
+  questionAnswered = false;
+  display();
+}
+
 
 
 const question1 = {
@@ -162,11 +166,14 @@ const question10 = {
 }
 
 const Finished = {
-    question: "congrats you have finished the quiz"
+    question: "Congrats! You have finished the quiz! Your score is: "+ score
 }
 
 var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, Finished]
 
-buttons[currentQuestionIndex].addEventListener("click", correct);
-
-display()
+buttons[currentQuestionIndex].addEventListener("click", function () {
+    correct(0); // Use any index since it will be ignored
+  });
+  
+  display();
+  
