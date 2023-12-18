@@ -1,5 +1,7 @@
 const questionBox = document.getElementById("Question")
+const buttonContainer = document.getElementById("buttonContainer")
 const buttons = document.querySelectorAll(".answers")
+var nextButton = document.createElement("button")
 
 let currentQuestionIndex = 0
 
@@ -9,21 +11,38 @@ function display ()
 
     for(let i=0; i < buttons.length; i++)
     {
-        buttons [i].innerText = questions[currentQuestionIndex].answers[i].option
-        buttons[i].addEventListener("click", correct) 
+        if(currentQuestionIndex === 10)
+        {
+            buttons[i].remove()
+
+        }
+        if(currentQuestionIndex <= 9)
+        {
+        buttons [i].innerText = questions[currentQuestionIndex].answer[i].option
+        buttons[i].addEventListener("click", correct)
+        console.log(i)
+        }
+        if(buttons[i].style.backgroundColor !== "rgb(255, 122, 45)")
+        {
+            buttons[i].style.backgroundColor = "rgb(255, 122, 45)"
+        }
+        if(currentQuestionIndex === 10)
+        {
+            buttons[i].remove()
+        }
     }
 }
 
 function correct ()
 {
     for (let i = 0; i < buttons.length; i++){
-        if (buttons[i].option.correct === true)
+        if (questions[currentQuestionIndex].answer[i].correct === true)
         {
-            //background color green
             buttons[i].style.backgroundColor = "green"
             // add next button and event listener to switch to next array item
-            var nextButton = document.createElement("button")
+            // var nextButton = document.createElement("button")
             nextButton.innerText ="Next"
+            buttonContainer.appendChild(nextButton)
             nextButton.addEventListener("click",next)
         }else
         {
@@ -36,6 +55,7 @@ function next ()
 {
     currentQuestionIndex ++
     nextButton.remove()
+    console.log(currentQuestionIndex)
     display()
 }
 
@@ -43,7 +63,7 @@ function next ()
 const question1 = {
     question: "What is the best-selling video game of all time?",
     // answer: "Tetris",
-    answers:[
+    answer:[
         {option: "Tetris", correct: true},
         {option: "Super Mario 64", correct: false},
         {option: "Minecraft", correct: false},
@@ -53,7 +73,7 @@ const question1 = {
 
 const question2 = {
     question: 'In what year was the game "Fortnite" first released?',
-    answer: [
+    answer:[
         {option: "2000", correct: false},
         {option: "1989", correct: false},
         {option: "2017", correct: true},
@@ -141,7 +161,11 @@ const question10 = {
     ],
 }
 
-var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10]
+const Finished = {
+    question: "congrats you have finished the quiz"
+}
+
+var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, Finished]
 
 buttons[currentQuestionIndex].addEventListener("click", correct);
 
