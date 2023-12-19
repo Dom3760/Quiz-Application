@@ -7,55 +7,88 @@ var score = 0;
 
 let currentQuestionIndex = 0;
 
+//function to display the question and the buttons
 function display() {
-  questionBox.innerText = questions[currentQuestionIndex].question;
-
-  if (currentQuestionIndex <= 9) {
+  //if the current index is below 0 it will:
+  if (currentQuestionIndex < 10 ) 
+  {
+    //take the current question and display it in the question box.
+    questionBox.innerText = questions[currentQuestionIndex].question;
+    //take each of the options from the objects and use a loop to show them on the page
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].innerText = questions[currentQuestionIndex].answer[i].option;
+      //adds an event listener that will launch the function correct and inject the param i
       buttons[i].addEventListener("click", function () {
         correct(i);
       });
+      //resets background color
       buttons[i].style.backgroundColor = "rgb(255, 122, 45)";
     }
-  } else {
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].remove();
+    /*
+    else if the index is above 10 it will display that they have completed the quiz 
+    and tell the score/ remove the buttons
+    */
+  } else
+  {
+      questionBox.innerText = "Congrats! You have finished the quiz! Your score is: "+ score
+      for (let i = 0; i < buttons.length; i++) 
+      {
+        buttons[i].remove();
+      }
     }
-  }
 }
 
-function correct(clickedIndex) {
-  if (questionAnswered) {
-    return;
+/* 
+after the display function adds event 
+listener it will inject the ith button to check if it is correct
+*/
+function correct(clickedIndex) 
+{
+  //if questionAnswered is true then it will exit the function
+  if (questionAnswered) 
+  {
+  return;
   }
 
+  //after button is clicked it will set questionAnswered to true so it cant be clicked again.
   questionAnswered = true;
 
-  for (let i = 0; i < buttons.length; i++) {
-    if (questions[currentQuestionIndex].answer[i].correct) {
+  //loop to check if option is correct if correct:
+  for (let i = 0; i < buttons.length; i++) 
+  {
+
+    if (questions[currentQuestionIndex].answer[i].correct) 
+    {
+      //it will change color to green and increment the score
       buttons[i].style.backgroundColor = "green";
-      if (clickedIndex === i) {
-        // Increment score only for the clicked correct answer
+      if (clickedIndex === i) 
+      {
         score++;
-        console.log("Score incremented:", score);
+        console.log("Score:", score);
       }
-    } else {
+      //else it will make the background red
+    }else 
+    {
       buttons[i].style.backgroundColor = "red";
     }
   }
-
+  //launches displayNextButton function
   displayNextButton();
 }
 
-function displayNextButton() {
+function displayNextButton() 
+{
+  //appends the button to the box and gives it text of next, class list added and adds event listener.
   nextButton.innerText = "Next";
   buttonContainer.appendChild(nextButton);
   nextButton.classList = "next";
   nextButton.addEventListener("click", next);
 }
 
-function next() {
+/*after ther next button is clicked it will increment the index, remove the next button, set the questionAnswered
+to false so it can be clicked againg and launch display funtion.*/
+function next() 
+{
   currentQuestionIndex++;
   nextButton.remove();
   questionAnswered = false;
@@ -63,10 +96,9 @@ function next() {
 }
 
 
-
+//defining questions and answers so when the question is up it will display, and so answers have true/false linked to them.
 const question1 = {
     question: "What is the best-selling video game of all time?",
-    // answer: "Tetris",
     answer:[
         {option: "Tetris", correct: true},
         {option: "Super Mario 64", correct: false},
@@ -165,15 +197,8 @@ const question10 = {
     ],
 }
 
-const Finished = {
-    question: "Congrats! You have finished the quiz! Your score is: "+ score
-}
+var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10]
 
-var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, Finished]
-
-buttons[currentQuestionIndex].addEventListener("click", function () {
-    correct(0); // Use any index since it will be ignored
-  });
-  
+//display at bottom so it can know what to pull from.
   display();
   
